@@ -1,5 +1,7 @@
 //Scene
 const scene = new THREE.Scene();
+const TextureLoader = new THREE.TextureLoader();
+const matcap = TextureLoader.load('../imagenes/papel.jpg')
 
 /* var fogColor = new THREE.Color(0xffffff);
 	scene.background = fogColor; // Setting fogColor as the background color also
@@ -9,7 +11,7 @@ const scene = new THREE.Scene();
 
 
 var loader = new THREE.TextureLoader()
-loader.load('../imagenes/images.jpg', function(texture){
+loader.load('../imagenes/cono.jpg', function(texture){
 	scene.background = texture;
 })
 
@@ -24,19 +26,29 @@ document.body.appendChild( renderer.domElement );
 
 //geometry
 const geometry = new THREE.ConeGeometry( 5, 20, 32 );
-const material = new THREE.MeshBasicMaterial( {color: 0xe30052} );
+const material = new THREE.MeshMatcapMaterial();
+material.matcap = matcap;
+material.flatShading = true;
 const cone = new THREE.Mesh( geometry, material );
 scene.add ( cone );
 
 camera.position.z = 30;
-camera.position.y = 1;
+camera.position.y = 0;
 camera.position.x = 0;
+
+const edges = new THREE.EdgesGeometry( geometry );
+const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) );
+scene.add( line );
 
 //animation
 function animate() {
     requestAnimationFrame(animate);
     cone.rotation.y +=0.01
-    cone.rotation.x +=0.02
+    /* cone.rotation.x +=0.02 */
     renderer.render(scene, camera);
+
+    line.rotation.y +=0.01;
+	 /*  line.rotation.x +=0.02; */
+	  renderer.render(scene, camera);
 }
 animate()
